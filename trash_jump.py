@@ -76,5 +76,5 @@ def PLUGIN_ENTRY():
 #     class SimpleTest(unittest.TestCase):
 #         def test_1(self):
 #             s = '50A66F10 ; Exported entry 2967. ?detac'
-#             self.assertEqual(trash_jump_plugin_t.parse(s), 0x50A66F10)
+#             self.assertEqual(trash_jump_plugin_t.parse(s)[0], 0x50A66F10)
 #     unittest.main()
