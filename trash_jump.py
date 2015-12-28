@@ -44,12 +44,6 @@ class trash_jump_plugin_t(idaapi.plugin_t):
     def parse(cls, s):
         try:
             s = s.strip()
-            m = cls._RE_ADDR.search(s)
-            cls._RE_ADDR.findall(s)
-            if not m:
-                idaapi.msg('TrashJump: address not found 1\n')
-                return
-
             return [long(addr, 16) for addr in cls._RE_ADDR.findall(s)]
         except:
             pass
