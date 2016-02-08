@@ -35,7 +35,7 @@ class trash_jump_plugin_t(idaapi.plugin_t):
     help = ""
     wanted_name = "Trash Jump"
     wanted_hotkey = "G"
-    _RE_ADDR = re.compile(r'[^0-9a-f]*([0-9a-f]+)[^0-9a-f]*', re.I | re.U | re.M)
+    _RE_ADDR = re.compile(r'(\b[0-9a-f]+\b)', re.I | re.U | re.M)
 
     def init(self):
         return idaapi.PLUGIN_OK
@@ -55,12 +55,12 @@ class trash_jump_plugin_t(idaapi.plugin_t):
                 return
             eas = self.parse(s)
             if not eas:
-                idaapi.msg('TrashJump: address not found\n')
+                idaapi.msg('TrashJump: there is no 16-based numbers in your input\n')
                 return
             for ea in eas:
                 if idaapi.jumpto(ea, idaapi.UIJMP_ACTIVATE | idaapi.UIJMP_IDAVIEW):
                     return
-            idaapi.msg('TrashJump: address not found\n')
+            idaapi.msg('TrashJump: address not found. Parsed: %r\n' % [hex(ea) for ea in eas])
         except:
             idaapi.msg('TrashJump: address not found\n')
 
