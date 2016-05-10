@@ -60,6 +60,10 @@ class trash_jump_plugin_t(idaapi.plugin_t):
             for ea in eas:
                 if idaapi.jumpto(ea, idaapi.UIJMP_ACTIVATE | idaapi.UIJMP_IDAVIEW):
                     return
+            ea = idaapi.get_name_ea(idaapi.BADADDR, s.strip())
+            if idaapi.BADADDR != ea:
+                if idaapi.jumpto(ea, idaapi.UIJMP_ACTIVATE | idaapi.UIJMP_IDAVIEW):
+                    return
             idaapi.msg('TrashJump: address not found\n')
         except:
             idaapi.msg('TrashJump: address not found\n')
