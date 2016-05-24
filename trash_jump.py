@@ -54,9 +54,6 @@ class trash_jump_plugin_t(idaapi.plugin_t):
             if not s:
                 return
             eas = self.parse(s)
-            if not eas:
-                idaapi.msg('TrashJump: there is no 16-based numbers in your input\n')
-                return
             for ea in eas:
                 if idaapi.jumpto(ea, idaapi.UIJMP_ACTIVATE | idaapi.UIJMP_IDAVIEW):
                     return
