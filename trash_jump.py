@@ -35,7 +35,7 @@ class trash_jump_plugin_t(idaapi.plugin_t):
     help = ""
     wanted_name = "Trash Jump"
     wanted_hotkey = "G"
-    _RE_ADDR = re.compile(r'(\b[0-9a-f]+\b)', re.I | re.U | re.M)
+    _RE_ADDR = re.compile(r'(\b(0x)?[0-9a-f]+\b)', re.I | re.U | re.M)
 
     def init(self):
         return idaapi.PLUGIN_OK
