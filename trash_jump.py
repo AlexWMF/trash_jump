@@ -35,7 +35,7 @@ class trash_jump_plugin_t(idaapi.plugin_t):
     help = ""
     wanted_name = "Trash Jump"
     wanted_hotkey = "G"
-    _RE_ADDR = re.compile(r'(\b(0x)?[0-9a-f]+\b)', re.I | re.U | re.M)
+    _RE_ADDR = re.compile(r'\b(0x)?([0-9a-f]+\b)', re.I | re.U | re.M)
 
     def init(self):
         return idaapi.PLUGIN_OK
@@ -44,7 +44,7 @@ class trash_jump_plugin_t(idaapi.plugin_t):
     def parse(cls, s):
         try:
             s = s.strip()
-            return [long(addr, 16) for addr in cls._RE_ADDR.findall(s)]
+            return [long(addr, 16) for _, addr in cls._RE_ADDR.findall(s)]
         except:
             pass
 
