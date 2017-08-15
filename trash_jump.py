@@ -26,6 +26,19 @@ __author__ = 'AlexWMF'
 
 import idaapi
 import re
+import traceback
+
+
+class UiCallable(object):
+    def __init__(self, fn_or_fnlist):
+        self.__fn = fn_or_fnlist
+    def __call__(self):
+        if isinstance(self.__fn, list):
+            for item in self.__fn:
+                item()
+        else:
+            self.__fn()
+        return False
 
 
 class trash_jump_plugin_t(idaapi.plugin_t):
@@ -35,20 +48,31 @@ class trash_jump_plugin_t(idaapi.plugin_t):
     help = ""
     wanted_name = "Trash Jump"
     wanted_hotkey = "G"
-    _RE_ADDR = re.compile(r'\b(0x)?([0-9a-f]+\b)', re.I | re.U | re.M)
+    _RE_ADDR = re.compile(r'\b(0x)?([0-9a-f]+)\b', re.I | re.U | re.M)
 
     def init(self):
         return idaapi.PLUGIN_OK
 
     @classmethod
     def parse(cls, s):
-        try:
-            s = s.strip()
-            return [long(addr, 16) for _, addr in cls._RE_ADDR.findall(s)]
-        except:
-            pass
+        rv = list()
+        for _, addr in cls._RE_ADDR.findall(s.strip()):
+            if not addr:
+                continue
+            try:
+                if '0x' not in addr.lower():
+                    addr = '0x' + addr
+                rv.append(long(addr, 16))
+            except:
+                pass
+                print 'err: %s' % traceback.format_exc()
+        return rv
 
     def run(self, arg):
+        cfn = UiCallable(self._run)
+        idaapi.execute_ui_requests((cfn,))
+
+    def _run(self):
         try:
             s = idaapi.askstr(0, None, 'TrashJump Address')
             if not s:
@@ -65,7 +89,7 @@ class trash_jump_plugin_t(idaapi.plugin_t):
 
             idaapi.msg('TrashJump: address not found. Parsed: %r\n' % [hex(ea) for ea in eas])
         except:
-            idaapi.msg('TrashJump: address not found\n')
+            idaapi.msg('TrashJump: address not found\nerror: %s\n' % traceback.format_exc())
 
     def term(self):
         pass
