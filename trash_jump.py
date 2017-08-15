@@ -29,6 +29,18 @@ import re
 import traceback
 
 
+class UiCallable(object):
+    def __init__(self, fn_or_fnlist):
+        self.__fn = fn_or_fnlist
+    def __call__(self):
+        if isinstance(self.__fn, list):
+            for item in self.__fn:
+                item()
+        else:
+            self.__fn()
+        return False
+
+
 class trash_jump_plugin_t(idaapi.plugin_t):
     flags = idaapi.PLUGIN_UNL
     comment = ""
@@ -57,6 +69,10 @@ class trash_jump_plugin_t(idaapi.plugin_t):
         return rv
 
     def run(self, arg):
+        cfn = UiCallable(self._run)
+        idaapi.execute_ui_requests((cfn,))
+
+    def _run(self):
         try:
             s = idaapi.askstr(0, None, 'TrashJump Address')
             if not s:
