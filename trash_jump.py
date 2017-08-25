@@ -104,6 +104,12 @@ class TrashJumpDialog(QtWidgets.QDialog):
 
         self.resize(421, 102)
         self.custom_base_changed(self.le_custom_base.text())
+        main_window = filter(lambda x: x.metaObject().className() == "IDAMainWindow", QtCore.QCoreApplication.instance().allWidgets())
+        if not main_window:
+            return
+        main_window = main_window[0]
+        parent_center = main_window.geometry().center()
+        self.move(parent_center - self.rect().center())
 
     def accept(self):
         try:
@@ -157,7 +163,7 @@ class trash_jump_plugin_t(idaapi.plugin_t):
         n.create(self.NET_NODE)
 
         return {
-            'custom_base': n.altval(0)
+            'custom_base': n.altval(0) if n.altval(0) else idaapi.get_imagebase()
         }
 
     def save_config(self, cfg):
