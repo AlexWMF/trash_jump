@@ -14,6 +14,11 @@ Right after you copied the current line from Olly, just press ```G``` in IDA to 
 
 The plugin will look for address strings using the following pattern `\b(0x)?([0-9a-f]+)\b` and will take the first `valid` address and navigate IDA there.
 
+In case you are get different module base in your debugger and you don't have the relocations/don't want to relocate the IDA DB you may use `Custom base` field to specify which base you currently working on. For example your IDB has `0x10000000` image base, but in the debugger the module is loaded at `0x4e000000` you should just put `0x4e000000` in `Custom base` field and just jump to the location you wanted:
+
+![](gui.png)
+
+
 ### FAQ
 
 * If the shortcut isn't work then just assign it using IDA's 'Options->Shortcuts' view.
